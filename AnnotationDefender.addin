@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<RevitAddIns>
+  <AddIn Type="Application">
+    <Name>Annotation Defender</Name>
+    <Assembly>.\AnnotationDefender.dll</Assembly>
+    <AddInId>29837b87-741f-492c-8cae-7ed2254fdfac</AddInId>
+    <FullClassName>AnnotationDefender.App</FullClassName>
+    <VendorId>None</VendorId>
+    <VendorDescription>None</VendorDescription>
+  </AddIn>
+</RevitAddIns>
