@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Recover Orphaned Tags")]
+[assembly: AssemblyTitle("Annotation Defender")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Recover Orphaned Tags")]
-[assembly: AssemblyCopyright("Copyright ©  2019")]
+[assembly: AssemblyProduct("Annotation Defender")]
+[assembly: AssemblyCopyright("Copyright ©  2020 Mikael Santrolli")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

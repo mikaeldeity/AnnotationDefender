@@ -4,40 +4,38 @@ using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Events;
 using System;
+using System.Reflection;
+using System.Windows.Media.Imaging;
 
 namespace AnnotationDefender
 {
     public class App : IExternalApplication
     {
-        bool check = false;
+        private static bool check = false;
+        static void AddRibbonPanel(UIControlledApplication application)
+        {
+            RibbonPanel ribbonPanel = application.CreateRibbonPanel("Annotation\nDefender");
 
-        UIControlledApplication app = null;
+            string thisAssemblyPath = Assembly.GetExecutingAssembly().Location;
 
+            PushButtonData b1Data = new PushButtonData("Annotation", "Annotation", thisAssemblyPath, "AnnotationDefender.ShowActive");
+            b1Data.AvailabilityClassName = "AnnotationDefender.Availability";
+            PushButton pb1 = ribbonPanel.AddItem(b1Data) as PushButton;
+            pb1.ToolTip = "Prevent annotation loss at sync with out of date links.";
+            Uri addinImage =
+                new Uri("pack://application:,,,/AnnotationDefender;component/Resources/AnnotationDefender.png");
+            BitmapImage pb1Image = new BitmapImage(addinImage);
+            pb1.LargeImage = pb1Image;
+        }
         public Result OnStartup(UIControlledApplication application)
         {
-            application.ControlledApplication.DocumentSynchronizingWithCentral += new EventHandler<DocumentSynchronizingWithCentralEventArgs>(OnSyncing);
-            application.ControlledApplication.DocumentChanged += new EventHandler<DocumentChangedEventArgs>(OnChanged);
+            AddRibbonPanel(application);
             application.ControlledApplication.FailuresProcessing += FailureProcessor;            
             return Result.Succeeded;
         }
         public Result OnShutdown(UIControlledApplication application)
         {            
             return Result.Succeeded;
-        }
-        public void OnSyncing(object sender, DocumentSynchronizingWithCentralEventArgs e)
-        {
-            check = true;
-        }
-        public void OnChanged (object sender, DocumentChangedEventArgs e)
-        {
-            if (e.GetTransactionNames().Contains("Reload Latest"))
-            {
-                check = true;
-            }
-            else
-            {
-                check = false;
-            }
         }
         private void FailureProcessor(object sender, FailuresProcessingEventArgs e)
         {
@@ -67,5 +65,22 @@ namespace AnnotationDefender
                 TaskDialog.Show("Error", "Some Revit links have been modified.\n  1) 'Unload' the modified Revit links\n  2) 'Reload Latest'");
             }
         }
-    }    
+    }
+    public class Availability : IExternalCommandAvailability
+    {
+        public bool IsCommandAvailable(UIApplication a, CategorySet b)
+        {
+            return true;
+        }
+    }
+    [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
+    [Autodesk.Revit.Attributes.Regeneration(Autodesk.Revit.Attributes.RegenerationOption.Manual)]
+    class ShowActive : IExternalCommand
+    {
+        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        {
+            TaskDialog.Show("Status", "Active");
+            return Result.Succeeded;
+        }
+    }
 }

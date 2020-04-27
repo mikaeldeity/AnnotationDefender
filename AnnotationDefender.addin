@@ -5,7 +5,7 @@
     <Assembly>.\AnnotationDefender.dll</Assembly>
     <AddInId>29837b87-741f-492c-8cae-7ed2254fdfac</AddInId>
     <FullClassName>AnnotationDefender.App</FullClassName>
-    <VendorId>None</VendorId>
-    <VendorDescription>None</VendorDescription>
+    <VendorId>Mikael Santrolli</VendorId>
+    <VendorDescription>mikael.santrolli@gmail.com</VendorDescription>
   </AddIn>
 </RevitAddIns>
