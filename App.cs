@@ -11,7 +11,6 @@ namespace AnnotationDefender
 {
     public class App : IExternalApplication
     {
-        private static bool check = false;
         static void AddRibbonPanel(UIControlledApplication application)
         {
             RibbonPanel ribbonPanel = application.CreateRibbonPanel("Annotation\nDefender");
@@ -22,8 +21,7 @@ namespace AnnotationDefender
             b1Data.AvailabilityClassName = "AnnotationDefender.Availability";
             PushButton pb1 = ribbonPanel.AddItem(b1Data) as PushButton;
             pb1.ToolTip = "Prevent annotation loss at sync with out of date links.";
-            Uri addinImage =
-                new Uri("pack://application:,,,/AnnotationDefender;component/Resources/AnnotationDefender.png");
+            Uri addinImage = new Uri("pack://application:,,,/AnnotationDefender;component/Resources/AnnotationDefender.png");
             BitmapImage pb1Image = new BitmapImage(addinImage);
             pb1.LargeImage = pb1Image;
         }
@@ -39,8 +37,6 @@ namespace AnnotationDefender
         }
         private void FailureProcessor(object sender, FailuresProcessingEventArgs e)
         {
-            if (!check) { return; }
-
             FailuresAccessor fas = e.GetFailuresAccessor();
 
             List<FailureMessageAccessor> fma = fas.GetFailureMessages().ToList();
@@ -57,6 +53,7 @@ namespace AnnotationDefender
                 if (failuremessage == error2 | failuremessage == error1)
                 {
                     e.SetProcessingResult(FailureProcessingResult.ProceedWithRollBack);
+                    var elements = fa.GetFailingElementIds();
                     catched = true;
                 }
             }
