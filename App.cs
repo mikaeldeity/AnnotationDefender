@@ -28,7 +28,7 @@ namespace AnnotationDefender
         public Result OnStartup(UIControlledApplication application)
         {
             AddRibbonPanel(application);
-            application.ControlledApplication.FailuresProcessing += FailureProcessor;            
+            application.ControlledApplication.FailuresProcessing += FailureProcessor;
             return Result.Succeeded;
         }
         public Result OnShutdown(UIControlledApplication application)
@@ -39,27 +39,29 @@ namespace AnnotationDefender
         {
             FailuresAccessor fas = e.GetFailuresAccessor();
 
-            List<FailureMessageAccessor> fma = fas.GetFailureMessages().ToList();
-
-            string error1 = "Coordination Monitor alert : A hosting element no longer exists in the link.";
-            string error2 = "One or more dimension references are or have become invalid.";
-
-            bool catched = false;
-
-            foreach (FailureMessageAccessor fa in fma)
+            if (fas.GetTransactionName() == "Synchronize with Central" | fas.GetTransactionName() == "Reload Latest")
             {
-                string failuremessage = fa.GetDescriptionText();
+                List<FailureMessageAccessor> fma = fas.GetFailureMessages().ToList();
 
-                if (failuremessage == error2 | failuremessage == error1)
+                string error1 = "Coordination Monitor alert : A hosting element no longer exists in the link.";
+                string error2 = "One or more dimension references are or have become invalid.";
+
+                bool catched = false;
+
+                foreach (FailureMessageAccessor fa in fma)
                 {
-                    e.SetProcessingResult(FailureProcessingResult.ProceedWithRollBack);
-                    var elements = fa.GetFailingElementIds();
-                    catched = true;
+                    string failuremessage = fa.GetDescriptionText();
+
+                    if (failuremessage == error2 | failuremessage == error1)
+                    {
+                        e.SetProcessingResult(FailureProcessingResult.ProceedWithRollBack);                        
+                        catched = true;
+                    }
                 }
-            }
-            if (catched)
-            {
-                TaskDialog.Show("Error", "Some Revit links have been modified.\n  1) 'Unload' the modified Revit links\n  2) 'Reload Latest'");
+                if (catched)
+                {
+                    TaskDialog.Show("Error", "Some Revit links have been modified.\nTo prevent Annotation loss:\n  1) 'Unload' the modified Revit links\n  2) 'Reload Latest'");
+                }
             }
         }
     }
